@@ -1,0 +1,8 @@
+
+
+#define SECRET_SSID "KTH-IoT"
+#define SECRET_PASS "i2clQBy5Mb" 
+
+
+#define SECRET_CH_ID 1572516		
+#define SECRET_WRITE_APIKEY "0PRIC5C7G8E9M352"   
