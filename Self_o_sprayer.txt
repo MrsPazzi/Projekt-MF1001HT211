@@ -1,13 +1,13 @@
 //Börjar med värdet 0 för dessa variabler
-int h2o = 0; 
-int nivo = 0;
-int fukt = 0;
-int number = 0;
+int h2o = 0; //Mätvärdet från vattensensorn
+int nivo = 0; //Halten vatten i tanken
+int fukt = 0; //Jordufuktigheten
+
 
 //Anger varable för sensor och komponenter kopplad till arduinon skölden.
-#define valv 0
-#define jordfukt A0
-#define vatten A1
+#define valv 0 //valven som öppnas vid vattning
+#define jordfukt A0 //Fuktighetssensor
+#define vatten A1 //Vattensensor
 
 //gränsvärden till intervallet som mätvärden från vattenssenson läggs in i.
 #define full 0
