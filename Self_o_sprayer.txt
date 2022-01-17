@@ -1,28 +1,33 @@
-int h2o = 0;
+//Börjar med värdet 0 för dessa variabler
+int h2o = 0; 
 int nivo = 0;
 int fukt = 0;
+int number = 0;
 
+//Anger varable för sensor och komponenter kopplad till arduinon skölden.
 #define valv 0
 #define jordfukt A0
 #define vatten A1
+
+//gränsvärden till intervallet som mätvärden från vattenssenson läggs in i.
 #define full 0
 #define fyll 521
 
+//Inkluderar modul och filer nödvändig för att ladda upp data till thingspeak
 #include <WiFiNINA.h>
 #include "secrets.h"
-#include "ThingSpeak.h" // always include thingspeak header file after other header files and custom macros
-
-char ssid[] = SECRET_SSID;    //  your network SSID (name) 
-char pass[] = SECRET_PASS;   // your network password
-int keyIndex = 0;            // your network key Index number (needed only for WEP)
+#include "ThingSpeak.h" 
+char ssid[] = SECRET_SSID;   //namnet på wifi, som är skriven i secrets.h
+char pass[] = SECRET_PASS;   //lösenord till wifi
+int keyIndex = 0;           
 WiFiClient  client;
-
 unsigned long myChannelNumber = SECRET_CH_ID;
 const char * myWriteAPIKey = SECRET_WRITE_APIKEY;
 
-int number = 0;
+
 
 void setup() {
+  // kopplar upp till nätverket 
   Serial.begin(115200);  // Initialize serial
   while (!Serial) {
     ; // wait for serial port to connect. Needed for Leonardo native USB port only
@@ -41,7 +46,6 @@ void setup() {
   }
     
   ThingSpeak.begin(client);  //Initialize ThingSpeak
-  
 }
 
 void loop() {
@@ -58,17 +62,23 @@ void loop() {
     Serial.println("\nConnected.");
   }
 
-  digitalWrite(valv, LOW);
-  h2o = analogRead(vatten);
-  nivo = map(h2o, full, fyll, 0, 100);
+  digitalWrite(valv, LOW); 
+  h2o = analogRead(vatten); //Tar in mätvärde från vattensensorn
+  nivo = map(h2o, full, fyll, 0, 100); //Kartläggning utav gränsvärden för att sedan bli jämförd med h20
+
+  
   if(nivo<10){
-  Serial.print("SLUT PÅ VATTEN. VÄNLIGEN FYLL.");
+  Serial.print("SLUT PÅ VATTEN. VÄNLIGEN FYLL."); //Går över else-satsen för dagen och vattanar inte för dagen. 
   }
   else{
     Serial.print("MOISTURE LEVEL : ");
+
+    //Mäter jordfuktigheten i växten
    fukt= analogRead(jordfukt);
-   fukt= fukt/10;
+   fukt= fukt/10; //Dividerar det med tio, sådom att värden inte är onödig stora att hantera.
    Serial.println(fukt);
+
+   //IF-sats som avgör om det ska vattnas
    if(0 < fukt < 50);
    {
     Serial.print("Vattnar...");
@@ -76,7 +86,8 @@ void loop() {
       delay(40000);
       Serial.print("Klart!");
     }
-    
+
+    //Kollar vattennivån igen
     h2o = analogRead(vatten);
     nivo = map(h2o, full, fyll, 0, 100);
     if(nivo<50){
@@ -86,9 +97,10 @@ void loop() {
   
   
   
-  
+  //Uppladning till thingspeak sida, som innehåller två grafer för vardera sensor.
   // Write to ThingSpeak. There are up to 8 fields in a channel, allowing you to store up to 8 different
   // pieces of information in a channel.  Here, we write to field 1.
+  
   int x = ThingSpeak.writeField(myChannelNumber, 1, fukt, myWriteAPIKey);
   if(x == 200){
     Serial.println("Channel update successful.");
@@ -105,6 +117,6 @@ void loop() {
   
 
   
-  delay(20000); // Wait 20 seconds to update the channel again
+  delay(20000); // Ska ha delay på ett dygn men nu är det 20 sekunder för att demonstrera prototypen. 
 
 }
