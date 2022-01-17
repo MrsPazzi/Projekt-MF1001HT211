@@ -117,6 +117,6 @@ void loop() {
   
 
   
-  delay(20000); // Ska ha delay på ett dygn men nu är det 20 sekunder för att demonstrera prototypen. 
+  delay(864000000); // Delay insatt på ett dygn så den går igenom loopen igen efter ett dygn.
 
 }
